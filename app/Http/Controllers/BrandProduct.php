@@ -60,4 +60,32 @@ class BrandProduct extends Controller
         Session::put('message', 'Kích hoạt thương hiệu sản phẩm thành công');
         return Redirect::to('all-brand-product');
     }
+
+    public function edit_brand_product($brand_product_id){
+         $this->AuthLogin();
+         $edit_brand_product = Brand::where('brand_id',$brand_product_id)->get();
+         $manager_brand_product = view('admin.edit_brand_product')->with('edit_brand_product',$edit_brand_product);
+         return view('admin_layout')->with('admin.edit_brand_product', 
+        $manager_brand_product);
+    }
+
+    public function update_brand_product(Request $request,$brand_product_id){
+        $this->AuthLogin();
+        $data = $request->all();
+        $brand = Brand::find($brand_product_id);
+        $brand->brand_name = $data['brand_product_name'];
+        $brand->brand_slug = $data['brand_product_slug'];
+        $brand->brand_desc = $data['brand_product_desc'];
+        $brand->brand_status = $data['brand_product_status'];
+        $brand->save();
+        Session::put('message','Cập nhật thương hiệu sản phẩm thành công');
+        return Redirect::to('all-brand-product');
+        }
+
+        public function delete_brand_product($brand_product_id){
+             $this->AuthLogin();
+             DB::table('tbl_brand')->where('brand_id',$brand_product_id)->delete();
+             Session::put('message','Xóa thương hiệu sản phẩm thành công');
+             return Redirect::to('all-brand-product');
+             }
 }
